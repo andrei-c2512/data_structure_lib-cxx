@@ -48,7 +48,7 @@ namespace Algorhitms {
 
 			std::swap(list[interval.second], list[pivot]);
 
-			while (left <= right) {
+			while (left < right) {
 				while (left < interval.second && list[left] <= list[interval.second]) {
 					left++;
 				}

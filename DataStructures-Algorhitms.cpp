@@ -10,6 +10,7 @@
 #include "AVLTree.hpp"
 #include "Heap.hpp"
 #include "SortingAlghoritms.hpp"
+#include "Trie.hpp"
 
 using namespace std;
 
@@ -53,6 +54,12 @@ int main()
     //Algorhitms::selectionSort(list, cmp);
     Algorhitms::quickSort(list, cmp);
     print(list);
+
+
+    std::vector<const char*> wordList = { "sigma" , "si" , "slgmadan" , "sigjson" , "sigmajohnson" , "sigmafloppa" };
+    Tree::Trie trie(wordList);
+    print(trie.wordsWithPrefix("sigma"));
+
 
 
     /*std::vector<char> vec = {'C' , 'E' , 'G' , 'K' , 'A' , 'M' , 'D' , '0' , 'B' , 'L' , 'F' , '0'  , '0' , 'I' , '0'};

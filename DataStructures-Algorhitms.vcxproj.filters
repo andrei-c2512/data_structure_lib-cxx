@@ -22,6 +22,9 @@
     <Filter Include="Header Files\Rendering">
       <UniqueIdentifier>{b3c8d3ff-2e31-408a-9620-97676a8e0dec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Trees\Trie">
+      <UniqueIdentifier>{95f686f1-f72a-4262-8b92-8b6d6d37065c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataStructures-Algorhitms.cpp">
@@ -76,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="SortingAlghoritms.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Trie.hpp">
+      <Filter>Header Files\Trees\Trie</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
