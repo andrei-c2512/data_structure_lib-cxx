@@ -6,19 +6,19 @@
 
 namespace Tree {
 	template<typename T, typename A = T>
-	class AVLTree : public AbstractSearchTree<T, A> {
+	class AVLTree : public AbstractSearchTree<T, A , AVLTag> {
 	public:
 		AVLTree() = default;
-		AVLTree(AVLNode<T>* root0)
+		AVLTree(TreeNode<T, AVLTag>* root0)
 			:root(root0)
 		{}
 		virtual ~AVLTree() {
-			std::stack<TreeNode<T>*> stack;
-			std::queue<TreeNode<T>*> q;
+			std::stack<TreeNode<T, AVLTag>*> stack;
+			std::queue<TreeNode<T, AVLTag>*> q;
 			q.push(root);
 
 			while (q.empty() == false) {
-				TreeNode<T>* node = q.front();
+				TreeNode<T, AVLTag>* node = q.front();
 				stack.push(node);
 				q.pop();
 
@@ -29,7 +29,7 @@ namespace Tree {
 			}
 
 			while (stack.empty() == false) {
-				TreeNode<T>* n = stack.top();
+				TreeNode<T, AVLTag>* n = stack.top();
 				delete n;
 
 				stack.pop();
@@ -46,18 +46,18 @@ namespace Tree {
 
 		void insert(const A& val) override {
 			if (root == nullptr) {
-				root = new AVLNode<T>(val);
+				root = new TreeNode<T, AVLTag>(val);
 				return;
 			}
 
 
-			TreeNode<T>* last = nullptr;
-			TreeNode<T>* cur = root;
+			TreeNode<T, AVLTag>* last = nullptr;
+			TreeNode<T, AVLTag>* cur = root;
 
-			std::stack<AVLNode<T>*> trail;
+			std::stack<TreeNode<T, AVLTag>*> trail;
 
 			while (cur != nullptr) {
-				trail.push(static_cast<AVLNode<T>*>(cur));
+				trail.push(cur);
 
 				last = cur;
 				if (cur->val > val) {
@@ -67,29 +67,27 @@ namespace Tree {
 					cur = cur->right;
 			}
 
-			// pop off the last element in the stack because it's bf is always between -1 and 1
-			trail.pop();
 			if (last->val < val) {
-				last->right = new AVLNode<T>(val);
+				last->right = new TreeNode<T, AVLTag>(val);
 			}
 			else
-				last->left = new AVLNode<T>(val);
+				last->left = new TreeNode<T, AVLTag>(val);
 
 			while (trail.empty() == false) {
-				AVLNode<T>* node = trail.top();
+				TreeNode<T, AVLTag>* node = trail.top();
 				trail.pop();
 
 				if (!trail.empty()) {
 					balance(node, trail.top(), val);
 				}
 				else {
-					balance(node, val);
+					balance(root, val);
 				}
 			}
 		}
 		//return nullptr if not found
-		TreeNode<T>* search(const A& val) const override {
-			TreeNode<T>* cur = root;
+		TreeNode<T, AVLTag>* search(const A& val) const override {
+			TreeNode<T, AVLTag>* cur = root;
 			while (cur) {
 				if (cur->val > val) {
 					cur = cur->left;
@@ -102,9 +100,9 @@ namespace Tree {
 			}
 			return nullptr;
 		}
-		[[nodiscard]] TreeNode<T>* remove(const A& val) override {
-			TreeNode<T>* last = nullptr;
-			TreeNode<T>* cur = root;
+		[[nodiscard]] TreeNode<T, AVLTag>* remove(const A& val) override {
+			TreeNode<T, AVLTag>* last = nullptr;
+			TreeNode<T, AVLTag>* cur = root;
 
 			while (cur) {
 				if (cur->val > val) {
@@ -116,90 +114,82 @@ namespace Tree {
 					cur = cur->right;
 				}
 				else {
-					detachNode(cur, last);
+					Utility::detachNode(cur, last);
 					return cur;
 				}
 			}
 			return nullptr;
 		}
 		void erase(const A& val) override {
-			TreeNode<T>* node = remove(val);
+			TreeNode<T, AVLTag>* node = remove(val);
 			if (node) {
 				delete node;
 			}
 		}
 	private:
-		using AbstractSearchTree<T, A>::rotateLeft;
-		using AbstractSearchTree<T, A>::rotateRight;
-		using AbstractSearchTree<T, A>::detachNode;
-
-		void balance(AVLNode<T>*& root, AVLNode<T>*& parent, const A& val) {
+		void balance(TreeNode<T, AVLTag>*& root, TreeNode<T, AVLTag>*& parent, const A& val) {
+			using namespace Utility;
 			root->balanceFactor = Utility::height(root->left) - Utility::height(root->right);
 
-			//while (validBF(root->balanceFactor) == false) 
+			while (validBF(root->balanceFactor) == false) 
 			{
-				if (unbalancedRight()) {
+				if (unbalancedLeft(root)) {
 					//if the tree is unbalanced to the right and the unbalance is by having a straight line to the left
 					//if the left node doesn't exist then it's clearly a wedge imbalance
 					if (root->left && val < root->left->val) {
 						//if you rotate right , you give more load to the right side , therefore balancing it
-						//rotateRight(root, parent);
+						rotateRight(root, parent);
 					}
 					else
 					{
-						//rotateRight(root->left, root);
-						//rotateLeft(root, parent);
+						rotateLeft(root->left, root);
+						rotateRight(root, parent);
 					}
 				}
 				//if the tree is unbalanced to the left and it's unbalanced in a straight line
-				else if (unbalancedLeft()) {
+				else if (unbalancedRight(root)) {
 					//check if it's a straight line unbalance
 					//if the right node doesn't exit then it's clearly a wedge formation
 					if (root->right && val > root->right->val) {
-						//rotateRight(root, parent);
+						rotateLeft(root, parent);
 					}
 					//otherwise it's a wedge like this '>'
 					else {
-						//rotateLeft(root->right, root);
-						//rotateRight(root, parent);
+						rotateRight(root->right, root);
+						rotateLeft(root, parent);
 					}
 				}
 				root->balanceFactor = Utility::height(root->left) - Utility::height(root->right);
 			}
 		}
-		void balance(AVLNode<T>*& node, const A& val) {
+		void balance(TreeNode<T, AVLTag>*& node, const A& val) {
+			using namespace Utility;
 			node->balanceFactor = Utility::height(node->left) - Utility::height(node->right);
 
 			//while (validBF(node->balanceFactor) == false) 
 			{
-				if (unbalancedRight()) {
-					//if the tree is unbalanced to the right and the unbalance is by having a straight line to the left
-					if (node->left && val < node->left->val) {
+				if (unbalancedRight(node)) {
+					//if the tree is unbalanced to the right and the unbalance is by having a straight line to the right
+					if (node->right && val > node->right->val) {
 						//if you rotate right , you give more load to the right side , therefore balancing it
-						//rotateRight(root);
+						rotateLeft(node);
 					}
 					else
 					{
-						//rotateRight(root->left, root);
-						//rotateLeft(root);
+						Utility::rotateRight(node->right, node);
+						rotateLeft(node);
 					}
 				}
 				//if the tree is unbalanced to the left and it's unbalanced in a straight line
-				else if (unbalancedLeft()) {
+				else if (unbalancedLeft(node)) {
 					//check if it's a straight line unbalance
-					if (node->right != nullptr) {
-						if (val > node->right->val) {
-							//rotateRight(root);
-						}
-						//otherwise it's a wedge
-						else {
-
-						}
+					if (node->left != nullptr && val < node->left->val) {
+						rotateRight(node);
 					}
 					//otherwise it's a wedge like this '>'
 					else {
-						//rotateLeft(root->right, root);
-						//rotateRight(root);
+						rotateLeft<TreeNode<T, AVLTag>>(node->left, node);
+						rotateRight(node);
 					}
 				}
 				node->balanceFactor = Utility::height(node->left) - Utility::height(node->right);
@@ -211,13 +201,13 @@ namespace Tree {
 		}
 
 
-		bool unbalancedRight() const noexcept {
-			return root->balanceFactor < -1;
+		static bool unbalancedRight(const TreeNode<T , AVLTag>* const node) noexcept {
+			return node->balanceFactor < -1;
 		}
-		bool unbalancedLeft() const noexcept {
-			return root->balanceFactor > 1;
+		static bool unbalancedLeft(const TreeNode<T, AVLTag>* const node) noexcept {
+			return node->balanceFactor > 1;
 		}
 	public:
-		AVLNode<T>* root = nullptr;
+		TreeNode<T, AVLTag>* root = nullptr;
 	};
 }

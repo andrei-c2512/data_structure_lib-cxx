@@ -135,6 +135,7 @@
     <ClInclude Include="AVLTree.hpp" />
     <ClInclude Include="BinarySearchTree.hpp" />
     <ClInclude Include="BinaryTree.hpp" />
+    <ClInclude Include="CompressedTrie.hpp" />
     <ClInclude Include="ConsoleDrawbale.hpp" />
     <ClInclude Include="ConsoleRenderer.hpp" />
     <ClInclude Include="Drawable.hpp" />
@@ -142,12 +143,17 @@
     <ClInclude Include="GraphNode.h" />
     <ClInclude Include="Heap.hpp" />
     <ClInclude Include="DrawableNode.hpp" />
+    <ClInclude Include="IntDatasetGenerator.hpp" />
+    <ClInclude Include="MemoryUtility.hpp" />
+    <ClInclude Include="PoolAllocator.hpp" />
     <ClInclude Include="RedBlackTree.hpp" />
     <ClInclude Include="SortingAlghoritms.hpp" />
     <ClInclude Include="TreeInterface.hpp" />
     <ClInclude Include="TreeNode.hpp" />
     <ClInclude Include="TreeUtility.hpp" />
     <ClInclude Include="Trie.hpp" />
+    <ClInclude Include="TrieCompressor.hpp" />
+    <ClInclude Include="TrieInterface.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -7,17 +7,17 @@
 
 namespace Tree {
 	template<typename T , typename A = T>
-	class RedBlackTree : public AbstractSearchTree<T , A> {
+	class RedBlackTree : public AbstractSearchTree<T , A , RedBlackTag> {
 	public:
 		RedBlackTree() = default;
 		void insert(const A& val) override { 
 			if (root == nullptr) {
-				root = new RedBlackTreeNode<T>(val , NodeColor::BLACK);
+				root = new TreeNode<T, RedBlackTag>(val , NodeColor::BLACK);
 			}
-			RedBlackTreeNode<T>* last = nullptr;
-			RedBlackTreeNode<T>* cur = root;
+			TreeNode<T, RedBlackTag>* last = nullptr;
+			TreeNode<T, RedBlackTag>* cur = root;
 
-			std::stack<RedBlackTreeNode<T>*> stackTrace;
+			std::stack<TreeNode<T, RedBlackTag>*> stackTrace;
 			while (cur != nullptr) {
 				stackTrace.emplace(cur);
 				last = cur;
@@ -31,17 +31,17 @@ namespace Tree {
 
 
 			if (last->val < val) {
-				last->right = new RedBlackTreeNode<T>(val , NodeColor::RED);
+				last->right = new TreeNode<T, RedBlackTag>(val , NodeColor::RED);
 			}
 			else
-				last->left = new RedBlackTreeNode<T>(val, NodeColor::RED);
+				last->left = new TreeNode<T, RedBlackTag>(val, NodeColor::RED);
 
 			//now we will keep track of the current node , parent  , and grandparent(if we know the grandparent , we also know the uncle)
-			RedBlackTree<T>* current = stackTrace.top();
+			TreeNode<T, RedBlackTag>* current = stackTrace.top();
 			stackTrace.pop();
-			RedBlackTree<T>* parent      = stackTrace.top();
+			TreeNode<T, RedBlackTag>* parent      = stackTrace.top();
 			stackTrace.pop();
-			RedBlackTree<T>* grandparent = stackTrace.top();
+			TreeNode<T, RedBlackTag>* grandparent = stackTrace.top();
 			stackTrace.pop();
 
 			while (grandparent) {
@@ -56,7 +56,7 @@ namespace Tree {
 			}
 
 		}
-		static bool redUncleCase(RedBlackTreeNode<T>*& current, RedBlackTreeNode<T>*& parent, RedBlackTreeNode<T>*& grandparent , RedBlackTreeNode<T>*& uncle) {
+		static bool redUncleCase(TreeNode<T, RedBlackTag>*& current, TreeNode<T, RedBlackTag>*& parent, TreeNode<T, RedBlackTag>*& grandparent , TreeNode<T, RedBlackTag>*& uncle) {
 			if (uncle->color != NodeColor::RED) {
 				return false;
 			}
@@ -66,7 +66,7 @@ namespace Tree {
 			}
 		}
 
-		static bool blackUncleTriangleCase(RedBlackTreeNode<T>*& current, RedBlackTreeNode<T>*& parent, RedBlackTreeNode<T>*& grandparent, RedBlackTreeNode<T>*& uncle) {
+		static bool blackUncleTriangleCase(TreeNode<T, RedBlackTag>*& current, TreeNode<T, RedBlackTag>*& parent, TreeNode<T, RedBlackTag>*& grandparent, TreeNode<T, RedBlackTag>*& uncle) {
 			assert(uncle->color == NodeColor::BLACK);
 
 			//checking this kind of wedge: <
@@ -84,7 +84,7 @@ namespace Tree {
 
 			return false;
 		}
-		static bool blackUncleLinearCase(RedBlackTreeNode<T>*& current, RedBlackTreeNode<T>*& parent, RedBlackTreeNode<T>*& grandparent, RedBlackTreeNode<T>*& uncle) {
+		static bool blackUncleLinearCase(TreeNode<T, RedBlackTag>*& current, TreeNode<T, RedBlackTag>*& parent, TreeNode<T, RedBlackTag>*& grandparent, TreeNode<T, RedBlackTag>*& uncle) {
 			assert(uncle->color == NodeColor::BLACK);
 
 			//straight line line to the left
@@ -97,7 +97,7 @@ namespace Tree {
 			}
 		}
 
-		static RedBlackTreeNode<T>* getUncle(RedBlackTreeNode<T>*& parent, RedBlackTreeNode<T>*& grandparent) {
+		static TreeNode<T, RedBlackTag>* getUncle(TreeNode<T, RedBlackTag>*& parent, TreeNode<T, RedBlackTag>*& grandparent) {
 			if (parent->val < grandparent->val)
 				return grandparent->right;
 			else
@@ -107,9 +107,9 @@ namespace Tree {
 		using AbstractSearchTree<T, A>::rotateLeft;
 		using AbstractSearchTree<T, A>::rotateRight;
 	private:
-		RedBlackTreeNode<T>* root = nullptr;
+		TreeNode<T, RedBlackTag>* root = nullptr;
 
-		static constexpr std::array<bool(*)(RedBlackTreeNode<T>*&, RedBlackTreeNode<T>*&, RedBlackTreeNode<T>*&, RedBlackTreeNode<T>*&), 3> 
+		static constexpr std::array<bool(*)(TreeNode<T, RedBlackTag>*&, TreeNode<T, RedBlackTag>*&, TreeNode<T, RedBlackTag>*&, TreeNode<T, RedBlackTag>*&), 3> 
 			trainCheck = { &redUncleCase , &blackUncleTriangleCase , &blackUncleLinearCase };
 	};
 }

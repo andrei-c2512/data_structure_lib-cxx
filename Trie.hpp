@@ -2,34 +2,34 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <optional>
+#include "TreeUtility.hpp"
+#include "TrieInterface.hpp"
+
 
 namespace Tree {
 	struct TrieNode {
 		TrieNode() {
 			ch = '\0';
 			wordEnd = false;
-			for (TrieNode*& n : list)
-				n = nullptr;
+			Utility::setArrToNull(list, 'z' - 'a');
 		}
 		TrieNode(char ch0, bool wordEnd0 = false) {
 			ch = ch0;
 			wordEnd = wordEnd0;
-			for (TrieNode*& n : list)
-				n = nullptr;
+			Utility::setArrToNull(list, 'z' - 'a');
 		}
 		~TrieNode() {
-			for (TrieNode*& n : list)
-			{
-				if (n)
-					delete n;
-			}
+			Utility::cleanUpArray(list, 'z' - 'a');
 		}
 		bool hasChildren() const noexcept {
-			for (const TrieNode* n : list) {
-				if (n)
-					return true;
+			return !Utility::nullArray<TrieNode*>(list, 'z' - 'a');
+		}
+		std::optional<TrieNode*> hasOneChild() const {
+			size_t cnt = 0;
+			for (size_t i = 0; i < 'z' - 'a'; i++) {
+				//if()
 			}
-			return false;
 		}
 		char ch;
 		bool wordEnd = false;
@@ -37,7 +37,7 @@ namespace Tree {
 	};
 
 
-	class Trie {
+	class Trie : public TrieInterface {
 	public:
 		Trie() {
 			root = new TrieNode;
@@ -47,6 +47,21 @@ namespace Tree {
 			for (size_t i = 0; i < list.size(); i++) {
 				addWord(list[i]);
 			}
+		}
+		Trie& operator=(const Trie& t) = delete;
+		Trie(const Trie& t) = delete;
+		Trie& operator=(Trie&& t) {
+			root = t.root;
+			t.root = nullptr;
+			return *this;
+		}
+		Trie(Trie&& t) {
+			root = t.root;
+			t.root = nullptr;
+		}
+		~Trie() {
+			if(root != nullptr)
+				delete root;
 		}
 		void addWord(const char* word) {
 			TrieNode* last = nullptr;
@@ -64,12 +79,12 @@ namespace Tree {
 			}
 			current->wordEnd = true;
 		}
-		bool wordExists(const char* word) const {
+		bool wordExists(const char* word) const override{
 			TrieNode* node = traversePath(word);
 			//return if we are at the end of the word and if the current node repesents a word end
 			return node && node->wordEnd;
 		}
-		void eraseWord(const char* word) {
+		void eraseWord(const char* word) override {
 			//I will delete them from end to start
 			std::stack<TrieNode*> stack;
 
@@ -94,7 +109,7 @@ namespace Tree {
 
 			if (!current->hasChildren()) {
 				delete current;
-				current = nullptr;
+				current = last;
 			}
 			else if (current->wordEnd) {
 				current->wordEnd = false;
@@ -108,13 +123,13 @@ namespace Tree {
 
 				if (!current->hasChildren()) {
 					delete current;
-					current = nullptr;
+					current = last;
 				}
 				else
 					return;
 			}
 		}
-		void removeWord(const char* word) {
+		void removeWord(const char* word) override{
 			TrieNode* node = traversePath(word);
 
 			if (node->wordEnd)
@@ -154,8 +169,10 @@ namespace Tree {
 
 			return wordList;
 		}
-
-
+		bool isNull() const override {
+			return root->hasChildren() == false;
+		}
+	private:
 		TrieNode* traversePath(const char* word) const noexcept {
 			size_t i = 0;
 			TrieNode* current = root;

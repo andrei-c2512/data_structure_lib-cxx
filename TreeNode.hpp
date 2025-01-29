@@ -1,12 +1,14 @@
 #pragma once
 #include <iostream>
 #include <queue>
+#include "MemoryUtility.hpp"
 
 namespace Tree {
-    template<typename T>
-    struct TreeNode {
+    template<typename T , typename Tag>
+    struct TreeNode : public Tag{
         TreeNode() = default;
-        TreeNode(int val0) : val(val0) {}
+        TreeNode(const T& val0) 
+            : val(val0) {}
 
         TreeNode* add(bool onRight, T val) {
             if (onRight)
@@ -35,36 +37,29 @@ namespace Tree {
                 std::cout << "Invalid node";
         }
 
+
         T val{};
-        TreeNode<T>* left = nullptr;
-        TreeNode<T>* right = nullptr;
+        TreeNode<T, Tag>* left = nullptr;
+        TreeNode<T, Tag>* right = nullptr;
+        char padding[MemoryUtility::calculatePadding(2 * sizeof(TreeNode<T , Tag>*) + sizeof(T))];
     };
 
     enum class NodeColor : int8_t {
         RED = 0x0, BLACK = 0x1
     };
 
-    template <typename T>
-    struct RedBlackTreeNode : public TreeNode<T> {
-    public:
-        RedBlackTreeNode(const T& val, NodeColor color0)
-            :TreeNode<T>(val), color(color0)
-        {}
+
+    struct NoTag {};
+    struct AVLTag {
+        int8_t balanceFactor = 0;
+    };
+    struct RedBlackTag {
         NodeColor color;
     };
 
-    template <typename T>
-    struct AVLNode : public TreeNode<T> {
-    public:
-        AVLNode(const T& val)
-            :TreeNode<T>(val)
-        {}
 
-        int8_t balanceFactor = 0;
-    };
-
-    template <typename T>
-    void show(TreeNode<T>* tree) {
+    template <typename DataType , typename Tag>
+    void show(TreeNode<DataType, Tag>* tree) {
         std::cout << tree->val << ' ';
         if (tree->left)
             show(tree->left);
@@ -72,17 +67,17 @@ namespace Tree {
             show(tree->right);
     }
 
-    template <typename T>
-    void breathFirstSearch(TreeNode<T>* tree) {
+    template <typename DataType, typename Tag>
+    void breathFirstSearch(TreeNode<DataType, Tag>* tree) {
         if (tree == nullptr) return;
 
-        std::queue<TreeNode<T>*> queue;
-        std::queue<TreeNode<T>*> nextLayer;
+        std::queue<TreeNode<DataType, Tag>*> queue;
+        std::queue<TreeNode<DataType, Tag>*> nextLayer;
         queue.push(tree);
 
         do {
             while (!queue.empty()) {
-                TreeNode<T>* n = queue.front();
+                TreeNode<DataType, Tag>* n = queue.front();
                 if (n->left)
                     nextLayer.push(n->left);
                 if (n->right)
@@ -94,18 +89,18 @@ namespace Tree {
             queue = nextLayer;
         } while (!queue.empty());
     }
-    template <typename T>
-    TreeNode<T>* create(std::vector<T> vec, T exclude) {
+    template <typename DataType, typename Tag>
+    TreeNode<DataType, Tag>* create(std::vector<DataType> vec, DataType exclude) {
         if (!vec.size()) return nullptr;
         int n = 2;
 
-        std::queue<TreeNode<T>*> queue;
-        TreeNode<T>* root = new TreeNode<T>(vec[0]);
+        std::queue<TreeNode<DataType , Tag>*> queue;
+        TreeNode<DataType, Tag>* root = new TreeNode<DataType, Tag>(vec[0]);
         queue.push(root);
         int i = 1;
         int cap = n + n / 2;
         while (i < vec.size()) {
-            TreeNode<T>* current = nullptr;
+            TreeNode<DataType, Tag>* current = nullptr;
             for (; i < cap; i++) {
                 if (!((i - (cap - n)) & 1)) {
                     current = queue.front();

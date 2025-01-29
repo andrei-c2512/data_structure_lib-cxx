@@ -25,6 +25,9 @@
     <Filter Include="Header Files\Trees\Trie">
       <UniqueIdentifier>{95f686f1-f72a-4262-8b92-8b6d6d37065c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Memory">
+      <UniqueIdentifier>{db2862f1-c269-4807-962d-b46b67a90396}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DataStructures-Algorhitms.cpp">
@@ -82,6 +85,24 @@
     </ClInclude>
     <ClInclude Include="Trie.hpp">
       <Filter>Header Files\Trees\Trie</Filter>
+    </ClInclude>
+    <ClInclude Include="CompressedTrie.hpp">
+      <Filter>Header Files\Trees\Trie</Filter>
+    </ClInclude>
+    <ClInclude Include="TrieInterface.hpp">
+      <Filter>Header Files\Trees\Trie</Filter>
+    </ClInclude>
+    <ClInclude Include="TrieCompressor.hpp">
+      <Filter>Header Files\Trees\Trie</Filter>
+    </ClInclude>
+    <ClInclude Include="IntDatasetGenerator.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PoolAllocator.hpp">
+      <Filter>Header Files\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="MemoryUtility.hpp">
+      <Filter>Header Files\Memory</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
