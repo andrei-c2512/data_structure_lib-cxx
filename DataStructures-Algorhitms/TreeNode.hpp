@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include <queue>
+#include "Common.hpp"
 #include "MemoryUtility.hpp"
 
 namespace Tree {
@@ -10,20 +10,20 @@ namespace Tree {
         TreeNode(const T& val0) 
             : val(val0) {}
 
-        TreeNode* add(bool onRight, T val) {
+        TreeNode<T , Tag>* add(bool onRight, T val) {
             if (onRight)
             {
-                right = new TreeNode<T>(val);
+                right = new TreeNode<T , Tag>(val);
                 return right;
             }
             else
             {
-                left = new TreeNode<T>(val);
+                left = new TreeNode<T ,  Tag>(val);
                 return left;
             }
         }
         //this function assumes that the node is a edge node
-        void remove(TreeNode* node) {
+        void remove(TreeNode<T , Tag>* node) {
             if (node == left)
             {
                 delete left;

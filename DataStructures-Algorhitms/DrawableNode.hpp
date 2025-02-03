@@ -1,6 +1,7 @@
 #pragma once
 #include "ConsoleDrawbale.hpp"
 #include <algorithm>
+#include <cstdint>
 
 //this shi dangerous cause I ain't testing for other data structures yet
 template<typename T>

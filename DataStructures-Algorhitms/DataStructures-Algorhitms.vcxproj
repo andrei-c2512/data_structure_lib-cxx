@@ -129,15 +129,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="AllocatorInterface.hpp" />
     <ClInclude Include="AVLTesting.hpp" />
     <ClInclude Include="AVLTree.hpp" />
     <ClInclude Include="BinarySearchTree.hpp" />
     <ClInclude Include="BinaryTree.hpp" />
     <ClInclude Include="Clock.hpp" />
+    <ClInclude Include="Common.hpp" />
     <ClInclude Include="CompressedTrie.hpp" />
     <ClInclude Include="ConsoleDrawbale.hpp" />
     <ClInclude Include="ConsoleRenderer.hpp" />
@@ -158,6 +156,9 @@
     <ClInclude Include="Trie.hpp" />
     <ClInclude Include="TrieCompressor.hpp" />
     <ClInclude Include="TrieInterface.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

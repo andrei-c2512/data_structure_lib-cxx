@@ -1,8 +1,5 @@
 #pragma once
 #include "TreeNode.hpp"
-#include <functional>
-#include <string>
-#include <array>
 
 namespace Tree {
 	namespace Utility{
@@ -21,10 +18,10 @@ namespace Tree {
         }
         template<typename T, typename Tag>
         void breathFirstIteration(TreeNode<T, Tag>* node , std::function<void(TreeNode<T, Tag>*)> process) {
-            std::queue<TreeNode<T>*> queue;
+            std::queue<TreeNode<T, Tag>*> queue;
             queue.push(node);
             while (queue.empty() == false) {
-                TreeNode<T>* current = queue.front();
+                TreeNode<T, Tag>* current = queue.front();
                 queue.pop();
 
                 if (current->left)
@@ -37,7 +34,7 @@ namespace Tree {
         }
         template <typename T, typename Tag>
         void levelTraversal(TreeNode<T, Tag>* root, std::function<void(TreeNode<T, Tag>*)> processNode, std::function<void()> onLevelStart) {
-            std::array<std::queue<TreeNode<T>*>, 2> alternatingQueues;
+            std::array<std::queue<TreeNode<T , Tag>*>, 2> alternatingQueues;
             //current queue flag
             bool flag = 0;
 
@@ -47,7 +44,7 @@ namespace Tree {
                 onLevelStart();
 
                 while (alternatingQueues[flag].empty() == false) {
-                    TreeNode<T>* node = alternatingQueues[flag].front();
+                    TreeNode<T , Tag>* node = alternatingQueues[flag].front();
                     alternatingQueues[flag].pop();
                     if (node->left) {
                         alternatingQueues[!flag].emplace(node->left);
@@ -109,10 +106,10 @@ namespace Tree {
 
 
         
-        template<typename Tag >
+        /*template<typename Tag >
         std::vector<int> generateTreeArray(TreeNode<int , Tag>* root) {
            
-        }
+        }*/
         template<typename Tag >
         inline void shut(TreeNode<int ,Tag>* root) {
             std::vector<std::string> lineList;

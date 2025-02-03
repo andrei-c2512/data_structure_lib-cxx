@@ -1,8 +1,4 @@
 #pragma once
-#include <string>
-#include <vector>
-#include <stack>
-#include <optional>
 #include "TreeUtility.hpp"
 #include "TrieInterface.hpp"
 
@@ -30,6 +26,7 @@ namespace Tree {
 			for (size_t i = 0; i < 'z' - 'a'; i++) {
 				//if()
 			}
+			return std::nullopt;
 		}
 		char ch;
 		bool wordEnd = false;

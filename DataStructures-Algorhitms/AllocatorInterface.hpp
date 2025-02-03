@@ -3,8 +3,6 @@
 
 class AllocatorInterface {
 public:
-	virtual void* allocateBlock() {
-		return nullptr;
-	}
-	virtual void deallocate(void* ptr) {}
+	virtual void* allocateBlock() = 0;
+	virtual void deallocate(void* ptr) = 0;
 };

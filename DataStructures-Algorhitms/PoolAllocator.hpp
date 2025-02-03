@@ -2,7 +2,7 @@
 #include <queue>
 #include <assert.h>
 #include "AllocatorInterface.hpp"
-
+#include <cstdint>
 
 class PoolAllocator : public AllocatorInterface{
 public:
